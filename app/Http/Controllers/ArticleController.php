@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreArticleRequest;
-use App\Http\Requests\UpdateArticleRequest;
+use App\Http\Requests\ArticleRequest;
+use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
 
@@ -16,18 +16,31 @@ class ArticleController extends Controller
     {
         $query = Article::query();
         $query->orderBy(
-            $request->query('sort_name', 'created_at'), 
+            $request->query('sort_name', 'created_at'),
             $request->query('sort_type', 'DESC')
         );
-        return $query->paginate($request->query('limit', 10));
+        return ArticleResource::collection($query->paginate($request->query('limit', 10)));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreArticleRequest $request)
+    public function store(ArticleRequest $request)
     {
-        //
+        /*
+        $article = new Article();
+        $article->title = $request->input('title');
+        $article->description = $request->input('description', '');
+        $article->content = $request->input('content', '');
+        $article->thumbnail = $request->input('thumbnail');
+        $article->banner = $request->input('banner');
+        $article->publish_at = $request->input('publish_at');
+        $article->save();
+        */
+        
+        $article = Article::create($request->validated());
+
+        return new ArticleResource($article);
     }
 
     /**
@@ -35,15 +48,17 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        //
+        return new ArticleResource($article);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateArticleRequest $request, Article $article)
+    public function update(ArticleRequest $request, Article $article)
     {
-        //
+        $article->update($request->validated());
+
+        return new ArticleResource($article);
     }
 
     /**
@@ -51,6 +66,7 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        //
+        $article->delete();
+        return ['success' => true];
     }
 }
