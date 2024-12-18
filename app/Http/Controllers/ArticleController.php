@@ -6,6 +6,7 @@ use App\Http\Requests\ArticleRequest;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
@@ -27,6 +28,7 @@ class ArticleController extends Controller
      */
     public function store(ArticleRequest $request)
     {
+        dd(Auth::user());
         /*
         $article = new Article();
         $article->title = $request->input('title');
