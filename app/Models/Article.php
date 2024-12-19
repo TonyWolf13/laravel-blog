@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Observers\ArticleObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy([ArticleObserver::class])]
 class Article extends Model
 {
     /** @use HasFactory<\Database\Factories\ArticleFactory> */
@@ -48,4 +52,11 @@ class Article extends Model
         'deleted_at'
     ];
 
+    /**
+     * Get the user that owns the article.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -16,10 +16,18 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $query = Article::query();
+
+        if ($user_id = $request->query('user_id')) {
+            $query->where('user_id', $user_id);
+        } else {
+            $query->with('user');
+        }
+
         $query->orderBy(
             $request->query('sort_name', 'created_at'),
             $request->query('sort_type', 'DESC')
         );
+
         return ArticleResource::collection($query->paginate($request->query('limit', 10)));
     }
 
@@ -28,20 +36,32 @@ class ArticleController extends Controller
      */
     public function store(ArticleRequest $request)
     {
-        dd(Auth::user());
-        /*
-        $article = new Article();
-        $article->title = $request->input('title');
-        $article->description = $request->input('description', '');
-        $article->content = $request->input('content', '');
-        $article->thumbnail = $request->input('thumbnail');
-        $article->banner = $request->input('banner');
-        $article->publish_at = $request->input('publish_at');
-        $article->save();
-        */
+        
+        // $article = new Article();
+        // $article->title = $request->input('title');
+        // $article->description = $request->input('description', '');
+        // $article->content = $request->input('content', '');
+        // $article->thumbnail = $request->input('thumbnail');
+        // $article->banner = $request->input('banner');
+        // $article->publish_at = $request->input('publish_at');
+        // $article->save();
+        
+        // $article = Article::create(
+        //     array_merge(
+        //         [
+        //             'user_id'=>$request->user()->id
+        //         ],
+        //         $request->validated()
+        //     )
+        // );
+        
+        //$article->user_id = Auth::user()->id;
+        //$article->user_id = auth()->user()->id;
+        // $article->user_id = $request->user()->id;
+        // $article->save();
         
         $article = Article::create($request->validated());
-
+        $article->load('user');
         return new ArticleResource($article);
     }
 
@@ -50,6 +70,7 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
+        $article->load('user');
         return new ArticleResource($article);
     }
 
@@ -59,7 +80,7 @@ class ArticleController extends Controller
     public function update(ArticleRequest $request, Article $article)
     {
         $article->update($request->validated());
-
+        $article->load('user');
         return new ArticleResource($article);
     }
 
