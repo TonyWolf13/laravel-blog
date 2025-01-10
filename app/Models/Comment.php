@@ -32,6 +32,7 @@ class Comment extends Model
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable')
+            ->orderBy('id', 'DESC')
             ->with('comments');
     }
 }

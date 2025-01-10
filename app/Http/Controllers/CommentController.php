@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentRequest;
+use App\Http\Resources\CommentResource;
 use App\Models\Article;
 use App\Models\Comment;
 use Illuminate\Http\Request;
@@ -28,7 +29,9 @@ class CommentController extends Controller
             abort(422, 'Article id is required.');
         }
 
-        return $query->paginate(10);
+        $query->orderBy('id', $request->query('sort_type', 'DESC'));
+
+        return CommentResource::collection($query->paginate(10));
     }
 
     /**
@@ -52,10 +55,10 @@ class CommentController extends Controller
             ]);
         }
         
-        return $model->comments()->create([
+        return new CommentResource($model->comments()->create([
             'body' => $request->body,
             'user_id' => Auth::user()->id 
-        ]);
+        ]));
     }
 
     /**
@@ -66,7 +69,7 @@ class CommentController extends Controller
         $comment->update([
             'body' => $request->body,
         ]);
-        return $comment;
+        return new CommentResource($comment);
     }
 
     /**

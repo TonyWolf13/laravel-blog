@@ -15,7 +15,8 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Article::query();
+        $query = Article::query()
+            ->withCount('comments');
 
         if ($user_id = $request->query('user_id')) {
             $query->where('user_id', $user_id);
