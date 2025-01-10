@@ -70,7 +70,7 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        $article->load(['user', 'comments']);
+        $article->load(['user']);
         return new ArticleResource($article);
     }
 

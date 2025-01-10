@@ -14,6 +14,24 @@ use Illuminate\Validation\ValidationException;
 class CommentController extends Controller
 {
     /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $query = Comment::query()
+            ->with('comments');
+
+        if ($article = $request->query('article_id')){
+            $query->where('commentable_id', $article)
+                ->where('commentable_type', Article::class);
+        } else {
+            abort(422, 'Article id is required.');
+        }
+
+        return $query->paginate(10);
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(CommentRequest $request)
@@ -43,16 +61,20 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CommentRequest $request, Comment $comment)
     {
-        //
+        $comment->update([
+            'body' => $request->body,
+        ]);
+        return $comment;
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Comment $comment)
     {
-        //
+        $comment->delete();
+        return ['success' => true];
     }
 }

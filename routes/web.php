@@ -14,8 +14,8 @@ Route::middleware(['auth:web'])->group(function() {
         Route::post('/', [ArticleController::class, 'store']);
 
         Route::prefix('/{article}')->group(function() {
-            Route::put('/', [ArticleController::class, 'update'])->can('owns', Article::class);
-            Route::delete('/', [ArticleController::class, 'destroy'])->can('owns', Article::class);
+            Route::put('/', [ArticleController::class, 'update'])->can('owns', 'article');
+            Route::delete('/', [ArticleController::class, 'destroy'])->can('owns', 'article');
         });
     });
         
@@ -23,8 +23,8 @@ Route::middleware(['auth:web'])->group(function() {
         Route::post('/', [CommentController::class, 'store']);
 
         Route::prefix('/{comment}')->group(function() {
-            Route::put('/', [CommentController::class, 'update'])->can('owns', Comment::class);
-            Route::delete('/', [CommentController::class, 'destroy'])->can('owns', Comment::class);
+            Route::put('/', [CommentController::class, 'update'])->can('owns', 'comment');
+            Route::delete('/', [CommentController::class, 'destroy'])->can('owns', 'comment');
         });
     });
 
@@ -37,3 +37,5 @@ Route::prefix('articles')->group(function() {
     Route::get('/', [ArticleController::class, 'index']);
     Route::get('/{article}', [ArticleController::class, 'show']);
 });
+
+Route::get('/comments', [CommentController::class, 'index']);
