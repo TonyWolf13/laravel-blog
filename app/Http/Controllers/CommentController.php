@@ -20,7 +20,8 @@ class CommentController extends Controller
     public function index(Request $request)
     {
         $query = Comment::query()
-            ->with('comments');
+            ->with('comments')
+            ->withCount('likes');
 
         if ($article = $request->query('article_id')){
             $query->where('commentable_id', $article)
