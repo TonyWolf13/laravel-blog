@@ -19,7 +19,7 @@ class Comment extends Model
     ];
 
     /**
-     * Get the parent commentable model (post or video).
+     * Get the parent commentable model (article or comment).
      */
     public function commentable(): MorphTo
     {
@@ -27,12 +27,21 @@ class Comment extends Model
     }
 
     /**
-     * Get all of the post's comments.
+     * Get all of the comment's comments.
      */
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable')
             ->orderBy('id', 'DESC')
-            ->with('comments');
+            ->with('comments')
+            ->withCount('likes');
+    }
+    
+    /**
+     * Get all of the comment's likes.
+     */
+    public function likes(): MorphMany
+    {
+        return $this->morphMany(Like::class, 'likable');
     }
 }

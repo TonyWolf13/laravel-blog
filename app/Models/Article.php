@@ -68,4 +68,12 @@ class Article extends Model
     {
         return $this->morphMany(Comment::class, 'commentable');
     }
+
+    /**
+     * Get all of the post's likes.
+     */
+    public function likes(): MorphMany
+    {
+        return $this->morphMany(Like::class, 'likable');
+    }
 }
